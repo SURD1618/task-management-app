@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <!-- Include Bootstrap CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-h0AbSVFllgXUjzAz73nP0eyFZjM3JDfYq4Ck7BZ6NJg3K8xI1+8z5Z5Y5trvb0DZ" crossorigin="anonymous"></script>
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+        }
+
+        .container {
+            padding: 50px;
+        }
+
+        .table th,
+        .table td {
+            border: 1px solid white;
+            padding: 10px;
+        }
+
+        .table thead th {
+            background-color: #1f2937;
+            color: white;
+        }
+
+        .update-button,
+        .add-button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .delete-button{
+            background-color: #ff0000;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .update-button:hover,
+        .add-button:hover {
+            background-color: #45a049;
+        }
+
+        .delete-button:hover{
+            background-color: #d50000;
+        }
+
+        .todo-title,
+        .todo-description {
+            background-color: #1f2937;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .todo-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .expandable-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: height 0.3s ease;
+            color: #000;
+        }
+
+        .expandable-input:focus {
+            height: 100px;
+        }
+
+        .task-title{
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="mb-4 text-3xl font-semibold text-center">Task List</h1>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Created At</th>
+                    <th>Updated At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% todos.forEach((todo) => { %>
+                <tr>
+                    <td class="todo-title"><%= todo.title %></td>
+                    <td class="todo-description"><%= todo.description %></td>
+                    <td><%= todo.created_at %></td>
+                    <td><%= todo.updated_at %></td>
+                    <td>
+                        <button type="button"
+                            class="update-button"
+                            data-id="<%= todo.id %>">Update</button>
+                        <form method="POST" action="/todos/<%= todo.id %>?_method=DELETE" style="display:inline;">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="delete-button btn btn-danger">Delete</button>
+                        </form>
+                        <form method="POST" action="/todos/<%= todo.id %>?_method=PUT" id="update-form-<%= todo.id %>"
+                            style="display:none;">
+                            <input type="hidden" name="_method" value="PUT">
+                            <label for="title">New Task Title:</label>
+                            <input type="text" id="title" name="title" value="<%= todo.title %>" required
+                                class="form-control mb-2" style="color: #000;"><br>
+                            <label for="description">New Task Description:</label>
+                            <textarea id="description" name="description" class="form-control mb-2" style="color: #000;"><%= todo.description
+                                %></textarea>
+                            <button type="submit" class="add-button">Update Task</button>
+                        </form>
+                    </td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <div class="todo-form text-center">
+            <h2 class="mb-3 text-xl font-semibold">Add Task</h2>
+            <form method="POST">
+                <div class="mb-3">
+                    <input type="text" id="title" name="title" required class="task-title" style="color: #000;"
+                        placeholder="Todo Title">
+                </div>
+                <div class="mb-3">
+                    <input type="text" id="description" name="description" required class="expandable-input"
+                        placeholder="Todo Description">
+                </div>
+                <button type="submit" class="add-button">Add Task</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            
+            $('.update-button').on('click', function()          // Update button click event
+            {
+                const taskId = $(this).data('id');
+                $(`#update-form-${taskId}`).toggle();           // Toggle visibility of the corresponding update form
+            });
+        });
+    </script>
+</body>
+
+</html>
