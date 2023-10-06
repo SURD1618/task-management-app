@@ -1,1 +1,1 @@
-# Task Management App using Express.js
+# Task Management App using Node.js and MySql
